@@ -1,10 +1,12 @@
 #!/bin/bash
-
+#.......................................................................................
 # Script to configure Arabic support on Linux, including keyboard, fonts, and interface
 # Author: Muhammad Adam
 # Telegram: https://t.me/meemadam
+#.......................................................................................
 
 # Check if the script is run as root
+
 if [ "$(id -u)" -ne 0 ]; then
     echo " ❌ This script must be run as root. Use sudo to execute it."
     exit 1
@@ -12,8 +14,10 @@ fi
 
 echo "Starting Arabic support configuration..."
 
-#....................................................................................
+#.......................................................................................
+
 # Add necessary repositories for Arabic and BiDi/RTL support on Debian-based systems
+
 if command -v apt &> /dev/null; then
     echo "Adding necessary repositories for Arabic and BiDi/RTL support..."
     sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe"
@@ -22,9 +26,11 @@ if command -v apt &> /dev/null; then
     sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc)-backports main universe"
     sudo apt update
 fi
-#....................................................................................
+
+#.......................................................................................
 
 # Function to install packages
+
 install_package() 
 {
     if command -v apt &> /dev/null; then
@@ -39,12 +45,15 @@ install_package()
     elif command -v zypper &> /dev/null; then
         sudo zypper install -y "$1"
     else
-        echo "Unsupported package manager. Please install $1 manually."
+        echo " ❌ Unsupported package manager. Please install $1 manually."
         exit 1
     fi
 }
-#....................................................................................
+
+#.......................................................................................
+
 # Update the package list
+
 echo " ► Updating package list..."
 if command -v apt &> /dev/null; then
     sudo apt update && sudo apt upgrade -y
@@ -57,9 +66,11 @@ elif command -v pacman &> /dev/null; then
 elif command -v zypper &> /dev/null; then
     sudo zypper refresh && sudo zypper update -y
 fi
-#....................................................................................
+
+#.......................................................................................
 
 # Install necessary packages for Arabic support
+
 echo " ► Installing necessary packages for Arabic support..."
 install_package "ibus"
 install_package "ibus-m17n"
@@ -112,8 +123,11 @@ install_package "ibus-table-quick5"
 install_package "ibus-table-quick-classic"
 install_package "ibus-table-stroke5"
 install_package "ibus-table-thai-ket"
-#....................................................................................
+
+#.......................................................................................
+
 # Download and install Noto Kufi Arabic font
+
 echo " ► Installing Noto Kufi Arabic font..."
 NOTO_KUFI_ARABIC_URL="https://github.com/notofonts/notofonts.github.io/raw/refs/heads/main/fonts/NotoKufiArabic/hinted/ttf/NotoKufiArabic-Regular.ttf"
 NOTO_KUFI_ARABIC_DIR="/usr/share/fonts/truetype/noto-kufi-arabic"
@@ -121,9 +135,11 @@ NOTO_KUFI_ARABIC_DIR="/usr/share/fonts/truetype/noto-kufi-arabic"
 sudo mkdir -p "$NOTO_KUFI_ARABIC_DIR"
 sudo wget -O "$NOTO_KUFI_ARABIC_DIR/NotoKufiArabic-Regular.ttf" "$NOTO_KUFI_ARABIC_URL"
 sudo fc-cache -f -v
-#....................................................................................
+
+#.......................................................................................
 
 # Set Arabic keyboard layout and Alt+Shift toggle shortcut
+
 echo "Configuring keyboard layout and shortcut..."
 #setxkbmap -model pc104 -layout us,ar -variant ,digits -option grp:alt_shift_toggle,grp:ctrl_shift_toggle  
 setxkbmap -layout "us,ar" -option "grp:alt_shift_toggle"
@@ -138,9 +154,11 @@ XKBVARIANT=""
 XKBOPTIONS="grp:alt_shift_toggle"
 BACKSPACE="guess"
 EOF
-#....................................................................................
+
+#.......................................................................................
 
 # Reload keyboard configuration
+
 echo "Reloading keyboard configuration..."
 if command -v dpkg-reconfigure &> /dev/null; then
     sudo dpkg-reconfigure -phigh console-setup
@@ -148,9 +166,11 @@ elif command -v systemctl &> /dev/null; then
     sudo systemctl restart keyboard-setup
 fi
 sudo udevadm trigger --subsystem-match=input --action=change
-#....................................................................................
+
+#.......................................................................................
 
 # Set "Noto Kufi Arabic" as the default font for various desktop environments
+
 DESKTOP_ENV=$(echo "$XDG_CURRENT_DESKTOP" | tr '[:upper:]' '[:lower:]')
 
 case "$DESKTOP_ENV" in
@@ -202,9 +222,11 @@ case "$DESKTOP_ENV" in
         echo "Unsupported desktop environment. Please set Noto Kufi Arabic as the default font manually."
         ;;
 esac
-#....................................................................................
+
+#.......................................................................................
 
 # Apply Arabic locale for the interface
+
 echo " 🌍 Applying Arabic locale settings... "
 if command -v update-locale &> /dev/null; then
     sudo update-locale LANG=ar_SA.UTF-8 LANGUAGE=ar_SA
@@ -214,9 +236,11 @@ elif command -v localectl &> /dev/null; then
     sudo localectl set-locale LANG=ar_SA.UTF-8
     sudo localectl set-x11-keymap us,ar grp:alt_shift_toggle
 fi
-#....................................................................................
+
+#.......................................................................................
 
 # Clean up and finalize
+
 echo "Cleaning up..."
 if command -v apt &> /dev/null; then
     sudo apt autoremove -y
@@ -230,7 +254,8 @@ elif command -v pacman &> /dev/null; then
 elif command -v zypper &> /dev/null; then
     sudo zypper clean
 fi
-#....................................................................................
+
+#.......................................................................................
 
 #echo "Configuration completed! Please restart your system to apply all changes."
 echo "✅ Arabic support configuration completed! Please restart your system."
