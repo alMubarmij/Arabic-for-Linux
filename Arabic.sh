@@ -125,6 +125,7 @@ sudo fc-cache -f -v
 
 # Set Arabic keyboard layout and Alt+Shift toggle shortcut
 echo "Configuring keyboard layout and shortcut..."
+#setxkbmap -model pc104 -layout us,ar -variant ,digits -option grp:alt_shift_toggle,grp:ctrl_shift_toggle  
 setxkbmap -layout "us,ar" -option "grp:alt_shift_toggle"
 
 # Make this change permanent
