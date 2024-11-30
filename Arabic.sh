@@ -13,6 +13,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 echo "Starting Arabic support configuration..."
+echo " 🔧 Starting Arabic support configuration..."
 
 #.......................................................................................
 
@@ -29,12 +30,13 @@ fi
 
 #.......................................................................................
 
+# Detect Package Manager
 # Function to install packages
 
 install_package() 
 {
     if command -v apt &> /dev/null; then
-        sudo apt update
+        #sudo apt update
         sudo apt install -y "$1"
     elif command -v dnf &> /dev/null; then
         sudo dnf install -y "$1"
@@ -53,6 +55,7 @@ install_package()
 #.......................................................................................
 
 # Update the package list
+echo "📦 Updating and upgrading system packages..."
 
 echo " ► Updating package list..."
 if command -v apt &> /dev/null; then
@@ -70,8 +73,8 @@ fi
 #.......................................................................................
 
 # Install necessary packages for Arabic support
+echo "📥 Installing necessary packages for Arabic support..."
 
-echo " ► Installing necessary packages for Arabic support..."
 install_package "ibus"
 install_package "ibus-m17n"
 install_package "fonts-noto"
